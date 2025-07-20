@@ -1,0 +1,34 @@
+{
+  "name": "netflixgpt",
+  "version": "1.0.0",
+  "description": "- Created the React App using Parcel - Configured TailwindCss  - Header - Routing - Login form - Sign up Form - Form Validation - useRef Hook",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Venkannababu22/NetflixGPT.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Venkannababu22/NetflixGPT/issues"
+  },
+  "homepage": "https://github.com/Venkannababu22/NetflixGPT#readme",
+  "devDependencies": {
+    "parcel": "^2.15.4"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router": "^6.22.3",
+    "react-router-dom": "^6.22.3",
+    "tailwindcss": "^4.1.11"
+  },
+  "browsersList": [
+    "last 2 versions"
+  ]
+}
