@@ -7,6 +7,11 @@
 - Sign up Form
 - Form Validation
 - useRef Hook
+- Firebase setup
+- Deployed app to production
+- Create Signup User account in firebare
+- Implement sign in user Api
+- Created Redux Store with userSlice
 
 # Features
 - Login/Signup page
@@ -23,4 +28,3 @@
     - Search Bar
     - Movie Suggestions
 
-# NetflixGPT

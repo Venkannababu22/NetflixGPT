@@ -1,8 +1,21 @@
 import { useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import { checkValidData } from "../utils/validate";
+import { updateProfile } from "firebase/auth";
+import { auth } from "../utils/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
+import { addUser } from "../utils/userSlice";
 
 import Header from "./Header";
+import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
 const App = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isSignIn, setIsSignIn] = useState(true);
   const [errMessage, setErrMessage] = useState(null);
   const name = useRef(null);
@@ -14,15 +27,68 @@ const App = () => {
   };
 
   const handleButoonClick = () => {
-    // validate the form data
     const message = checkValidData(
       email.current.value,
       password.current.value,
-      name.current.value
+      !isSignIn ? name.current?.value : null
     );
     setErrMessage(message);
 
-    // Sign In / Sign up
+    if (message) return;
+
+    if (!isSignIn) {
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          updateProfile(user, {
+            displayName: name.current.value,
+            photoURL:
+              "https://avatars.githubusercontent.com/u/138277506?s=400&u=fc5439447a56df400b0ed779fac58cd0bd0b9a1a&v=4",
+          })
+            .then(() => {
+              // Profile updated!
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                })
+              );
+              navigate("/browse");
+            })
+            .catch((error) => {
+              setErrMessage(error.message);
+            });
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrMessage(errorCode + " " + errorMessage);
+        });
+    } else {
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrMessage(errorCode + " " + errorMessage);
+        });
+    }
   };
 
   return (
@@ -45,6 +111,13 @@ const App = () => {
         <h1 className="font-bold text-3xl py-4">
           {isSignIn ? "Sign In" : "Sign Up"}
         </h1>
+
+        <input
+          ref={email}
+          className="p-4 m-2 rounded-md w-full bg-gray-500 text-white"
+          type="text"
+          placeholder="Email"
+        />
         {!isSignIn && (
           <input
             ref={name}
@@ -53,13 +126,6 @@ const App = () => {
             placeholder="Full Name"
           />
         )}
-        <input
-          ref={email}
-          className="p-4 m-2 rounded-md w-full bg-gray-500 text-white"
-          type="text"
-          placeholder="Email"
-        />
-
         <input
           ref={password}
           className="p-4 m-2 rounded-md w-full bg-gray-500 text-white"
